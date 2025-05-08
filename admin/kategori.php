@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Beranda - Martins-Clothing Admin</title>
+  <title>Kategori / Kategori - Martins-Clothing Admin</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -51,20 +51,28 @@
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
 
-    
+    <div class="search-bar">
+      <form class="search-form d-flex align-items-center" method="POST" action="#">
+        <input type="text" name="query" placeholder="Search" title="Enter search keyword" value="<?php echo isset($_POST['query']) ? htmlspecialchars($_POST['query']) : ''; ?>">
+        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+      </form>
+    </div><!-- End Search Bar -->
 
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
 
-        
-        
+        <li class="nav-item d-block d-lg-none">
+          <a class="nav-link nav-icon search-bar-toggle " href="#">
+            <i class="bi bi-search"></i>
+          </a>
+        </li><!-- End Search Icon-->
 
-        
+
         <li class="nav-item dropdown pe-3">
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             <img src="assets/img/stalin.webp" alt="Profile" class="rounded-circle">
-            
+            <span class="d-none d-md-block dropdown-toggle ps-2"></span>
           </a><!-- End Profile Iamge Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
@@ -76,19 +84,7 @@
               <hr class="dropdown-divider">
             </li>
 
-            
-              <hr class="dropdown-divider">
-            </li>
 
-            
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            
-            <li>
-              <hr class="dropdown-divider">
-            </li>
 
             <li>
               <a class="dropdown-item d-flex align-items-center" href="#">
@@ -112,12 +108,12 @@
 
       <li class="nav-item">
         <a class="nav-link " href="index.php">
-        <i class="bi bi-house"></i>
+          <i class="bi bi-house"></i>
           <span>Beranda</span>
         </a>
       </li><!-- End Dashboard Nav -->
 
-      
+
       <li class="nav-item">
         <a class="nav-link collapsed" href="kategori.php">
           <i class="bi bi-person"></i>
@@ -160,7 +156,7 @@
         </a>
       </li><!-- End Error 404 Page Nav -->
 
-      
+
     </ul>
 
   </aside><!-- End Sidebar-->
@@ -168,79 +164,96 @@
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Beranda</h1>
+      <h1>Kategori</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.php">Beranda</a></li>
-          <li class="breadcrumb-item active">Beranda</li>
+          <li class="breadcrumb-item active">Kategori</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
 
-    <section class="section dashboard">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <a href="t_kategori.php" class="btn btn-primary mt-3">
+              <i class="bi bi-plus-lg"></i> Tambah Data
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="section">
       <div class="row">
 
-        <!-- Left side columns -->
-        <div class="col-lg-8">
-          <div class="row">
-            <!-- Welcome Card -->
-            <div class="col-12">
-              <div class="card info-card customers-card shadow-sm w-100">
-                <div class="card-body text-center py-4">
-                  <h4 class="mb-2">Selamat Datang di Website Admin<strong>Martins-Clothing</strong></h4>
-                  <p class="text-muted small mb-0">Kelola produk, transaksi, dan pelanggan dengan mudah.</p> 
-                </div>
-              </div>
+
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+
+              <!-- Table with stripped rows -->
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Nama Kategori</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php
+                  include 'koneksi.php';
+                  $no = 1;
+
+                  // Cek apakah ada pencarian
+                  $query = isset($_POST['query']) ? mysqli_real_escape_string($koneksi, $_POST['query']) : '';
+
+                  // Query dasar
+                  $sql_query = "SELECT id_ktg, nm_ktg FROM tb_ktg";
+
+                  // Jika ada pencarian, tambahkan kondisi WHERE
+                  if (!empty($query)) {
+                    $sql_query .= " WHERE nm_kategori LIKE '%$query%'";
+                  }
+
+                  $sql = mysqli_query($koneksi, $sql_query);
+
+                  if (mysqli_num_rows($sql) > 0) {
+                    while ($hasil = mysqli_fetch_array($sql)) {
+                  ?>
+                      <tr>
+                        <td><?php echo $no++; ?></td>
+                        <td><?php echo $hasil['nm_ktg']; ?></td>
+                        <td>
+                          <a href="e_kategori.php?id=<?php echo $hasil['id_ktg']; ?>" class="btn btn-warning">
+                            <i class="bi bi-pencil-square"></i>
+                          </a>
+                          <a href="h_kategori.php?id=<?php echo $hasil['id_ktg']; ?>" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data?')">
+                            <i class="bi bi-trash"></i>
+                          </a>
+                        </td>
+                      </tr>
+                    <?php
+                    }
+                  } else {
+                    ?>
+                    <tr>
+                      <td colspan="3" class="text-center">Belum Ada Data</td>
+                    </tr>
+                  <?php
+                  }
+                  ?>
+                </tbody>
+              </table>
+              <!-- End Table with stripped rows -->
+
             </div>
-            <!--End Welcome Card-->
 
-            <!-- Sales Card -->
-            <div class="col-xxl-4 col-md-6">
-              <div class="card info-card sales-card">
-
-                <div class="card-body">
-                  <h5 class="card-title">Pesanan <span>| Semua Waktu</span></h5>
-                  
-
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-basket"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>145</h6>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div><!-- End Sales Card -->
-
-            <!-- Revenue Card -->
-            <div class="col-xxl-4 col-md-6">
-              <div class="card info-card revenue-card">
-                <div class="card-body">
-                  <h5 class="card-title">Pendapatan <span>| Hari Ini</span></h5>
-
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-currency-dollar"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>Rp. 32.264</h6>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div><!-- End Revenue Card -->
-
-            
           </div>
-        </div><!-- End Left side columns -->
-
-        
-
-      </div>
+        </div>
     </section>
 
   </main><!-- End #main -->
