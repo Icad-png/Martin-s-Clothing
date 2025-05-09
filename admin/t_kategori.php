@@ -3,7 +3,7 @@ include "koneksi.php";
 
 if (isset($_POST['simpan'])) {
     $auto = mysqli_query($koneksi, "SELECT max(id_ktg) as max_code FROM tb_ktg");
-    $hasil + mysqli_fetch_array($auto);
+    $hasil = mysqli_fetch_array($auto);
     $kode = $hasil['max_code'];
     $urutan = (int) substr($kode, 3, 3);
     $urutan++;
@@ -13,7 +13,7 @@ if (isset($_POST['simpan'])) {
 
     $query = mysqli_query($koneksi, "INSERT INTO tb_ktg (id_ktg, nama_ktg) VALUES ('$id_ktg', '$nm_ktg')");
     if ($query) {
-        echo "<script>alert('Data Berhasil Disimpan'); window.location = 't_ktg.php';</script>";
+        echo "<script>alert('Data Berhasil Disimpan'); window.location = 'kategori.php';</script>";
         header("refresh:0, ktg.php");
     } else {
         echo "<script>alert('Data Gagal Disimpan'); window.location = 't_ktg.php';</script>";
