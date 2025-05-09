@@ -141,7 +141,7 @@
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="transaksi.php">
-          <i class="bi bi-card-list"></i>
+          <i class="bi bi-cash-coin"></i>
           <span>Transaksi</span>
         </a>
       </li><!-- End Register Page Nav -->
